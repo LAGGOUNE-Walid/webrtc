@@ -1,0 +1,23 @@
+version: "3.3"
+networks:
+  web-rtc:
+services:
+  redis:
+    image: redis:7.0.8
+    command: bash -c "redis-server --appendonly yes --requirepass XyYryA9s4568ezaM3DlqXwcscBCQz@Axg"
+    container_name: redi-webrtc
+    networks:
+      - web-rtc
+  npm:
+    container_name: npm-rtc
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    build:
+      dockerfile: Dockerfile
+      context: ./src
+    volumes:
+      - ./src:/usr/src/app
+    entrypoint: ["tail", "-f", "/dev/null"]
+    networks:
+      - web-rtc
