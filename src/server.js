@@ -7,15 +7,10 @@ const redis = require('redis')
 const path = require('path');
 const AvatarGenerator = require('avatar-generator')
 
-const avatar = new AvatarGenerator({
-    imageExtension: '.png'
-});
-
-
-
 const redisClient = redis.createClient({
     url: 'redis://default:XyYryA9s4568ezaM3DlqXwcscBCQz@Axg@redis'
 });
+
 redisClient.on('error', (err) => {
     console.log(`Error ${err}`)
 })
@@ -34,6 +29,6 @@ app.get('/:room', (req, res) => {
 })
 
 const IoController = require("./IoControllers.js")
-io.on('connection', (socket) => IoController(socket, redisClient, io, avatar));
+io.on('connection', (socket) => IoController(socket, redisClient, io));
 
 server.listen(3000)

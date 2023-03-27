@@ -13,125 +13,117 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-  <!-- MDB -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css" rel="stylesheet" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
   <title>Document <%= roomId %>
   </title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     #videos {
-      /* display: grid; */
-      display: none;
-      grid-template-columns: 1fr 1fr;
-      gap: 2em;
+      display: grid;
+      grid-template-columns: 1fr;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .video-player {
       background-color: black;
       width: 100%;
-      height: 300px;
+      height: 100%;
+      object-fit: cover;
     }
 
-    #chat3 .form-control {
-      border-color: transparent;
+    #user-2 {
+      display: none;
     }
 
-    #chat3 .form-control:focus {
-      border-color: transparent;
-      box-shadow: inset 0px 0px 0px 1px transparent;
+    .smallFrame {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      height: 170px;
+      width: 300px;
+      border-radius: 5px;
+      border: 2px solid #a7beff;
+      -webkit-box-shadow: 3px 3px 15px -1px rgba(0, 0, 0, 0.77);
+      box-shadow: 3px 3px 15px -1px rgba(0, 0, 0, 0.77);
+      z-index: 999;
     }
 
-    .badge-dot {
+
+    #controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 1em;
+    }
+
+
+    .control-container {
+      background-color: #a7beff;
+      padding: 20px;
       border-radius: 50%;
-      height: 10px;
-      width: 10px;
-      margin-left: 2.9rem;
-      margin-top: -.75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .control-container img {
+      height: 30px;
+      width: 30px;
+    }
+
+    #leave-btn {
+      background-color: rgb(255, 130, 130);
+      color: black;
+    }
+
+    @media screen and (max-width:600px) {
+      .smallFrame {
+        height: 80px;
+        width: 120px;
+      }
+
+      .control-container img {
+        height: 20px;
+        width: 20px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div id="video-grid">
-    <div id="videos">
-      <video class="video-player" id="user-1" autoplay playsinline></video>
-      <video class="video-player" id="user-2" autoplay playsinline></video>
-    </div>
+  <div id="videos">
+    <video class="video-player" id="user-1" autoplay playsinline></video>
+    <video class="video-player" id="user-2" autoplay playsinline></video>
   </div>
-  <section style="background-color: #f3f3f3; height: 100vh;" class="chat">
-    <div class="container pt-5" id="chat" style="display: none;">
 
-      <div class="row ">
-        <div class="col-md-12">
+  <div id="controls">
 
-          <div class="card" id="chat3" style="border-radius: 15px;">
-            <div class="card-body">
-
-              <div class="row">
-                <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
-
-                  <div class="p-3">
-
-                    <div data-mdb-perfect-scrollbar="true" class="overflow-scroll" style="position: relative; height: 70vh">
-                      <ul class="list-unstyled mb-0" id="online-users">
-                      </ul>
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <div class="col-md-6 col-lg-7 col-xl-8">
-
-                  <div class="pt-3 pe-3 overflow-scroll" data-mdb-perfect-scrollbar="true"
-                    style="position: relative; height: 70vh">
-
-                      <!--
-                    <div class="d-flex flex-row justify-content-start">
-                      <img id="my-avatar" alt="avatar 1" style="width: 45px; height: 100%;" class="rounded-circle">
-                      <div>
-                        <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">Lorem ipsum
-                          dolor
-                          sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                          dolore
-                          magna aliqua.</p>
-                        <p class="small ms-3 mb-3 rounded-3 text-muted float-end">12:00 PM | Aug 13</p>
-                      </div>
-                    </div>
-
-                    <div class="d-flex flex-row justify-content-end">
-                      <div>
-                        <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">Ut enim ad minim veniam,
-                          quis
-                          nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        <p class="small me-3 mb-3 rounded-3 text-muted">12:00 PM | Aug 13</p>
-                      </div>
-                      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                        alt="avatar 1" style="width: 45px; height: 100%;">
-                      </div>
-                      !-->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div class="control-container" id="camera-btn">
+      <i class="bi bi-camera-reels"></i>
     </div>
-    <div class="container pt-5" id="form">
-      <div class="form-outline">
-        <input type="text" id="username-input" class="form-control form-control-lg" />
-        <label class="form-label" for="formControlLg">Username</label>
 
-      </div>
-      <br />
-      <button type="button pt-3" class="btn btn-success" id="joinButton">Join</button>
-
+    <div class="control-container" id="mic-btn">
+      <i class="bi bi-mic-fill"></i>
     </div>
-  </section>
+
+  </div>
 </body>
-<!-- MDB -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 <script src="script.js"></script>
 
 </html>

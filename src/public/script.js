@@ -1,22 +1,6 @@
-let username = null;
-
-if (username === null) {
-    var joinButton = document.getElementById('joinButton');
-    var usernameInput = document.getElementById('username-input');
-    joinButton.addEventListener('click', function () {
-        if (usernameInput.value !== "") {
-            username = usernameInput.value;
-            document.getElementById('form').style.display = "none";
-
-
-
-            establishConnection(username);
-
-        }
-    });
+window.onload = function () {
+    establishConnection("");
 }
-
-let socket = null;
 
 function establishConnection(username) {
 
@@ -28,9 +12,6 @@ function establishConnection(username) {
 
     socket.on('connect', function () {
 
-        socket.emit('room:' + ROOM_ID + ':websockets-request-avatar', { username: username });
-
-        /**
         let createPeer = async () => {
             peerConnection = new RTCPeerConnection({
                 iceServers: [
@@ -49,10 +30,17 @@ function establishConnection(username) {
             };
             remoteStream = new MediaStream;
             document.getElementById('user-2').srcObject = remoteStream
+            document.getElementById('user-2').style.display = 'block';
             if (!localStream) {
-                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                document.getElementById('user-1').srcObject = localStream;
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { min: 640, ideal: 1920, max: 1920 },
+                        height: { min: 480, ideal: 1080, max: 1080 }
+                    }, audio: true
+                });
             }
+            document.getElementById('user-1').srcObject = localStream;
+            document.getElementById('user-1').classList.add('smallFrame');
             localStream.getTracks().forEach((track) => {
                 peerConnection.addTrack(track, localStream)
             });
@@ -128,64 +116,49 @@ function establishConnection(username) {
             localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
             document.getElementById('user-1').srcObject = localStream;
         }
+
         init();
-        
+
         socket.on('room:' + ROOM_ID + ':websockets-incomming-call', handleIncommingCallFromPeer);
         socket.on('room:' + ROOM_ID + ':websockets-user-accepted-call', accepteRemoteUserCall);
         socket.on('room:' + ROOM_ID + ':websockets-ice-candidate', setIceCandidate);
-        **/
+        socket.on('room:' + ROOM_ID + ':websockets-user-connected', createPeerConnectionWithNewUserConnected);
 
-
-        let setAvatar = async (data) => {
-            document.getElementById('chat').style.display = "block";
+        let leaveChannel = async () => {
+            await channel.leave()
+            await client.logout()
         }
 
-        let handleNewUserConnected = async (data) => {
-            addUserToChatList(data);
-        };
+        let toggleCamera = async () => {
+            let videoTrack = localStream.getTracks().find(track => track.kind === 'video')
 
-        let handleUsersList = async (data) => {
-            addUserToChatList(data);
+            if (videoTrack.enabled) {
+                videoTrack.enabled = false
+                document.getElementById('camera-btn').style.backgroundColor = 'rgb(255, 80, 80)'
+            } else {
+                videoTrack.enabled = true
+                document.getElementById('camera-btn').style.backgroundColor = 'rgb(179, 102, 249, .9)'
+            }
         }
 
-        
-
-        let addUserToChatList = (data) => {
-            document.getElementById('online-users').innerHTML += `
-                <li class="p-2 border-bottom" id="${data.socketId}">
-                    <a href="#!" id="start-chat-with-${data.socketId}" onclick="startChatWith(event, '${data.socketId}')" class="d-flex justify-content-between">
-                        <div class="d-flex flex-row">
-                            <div>
-                            <img src="${data.avatar}" alt="avatar" class="d-flex align-self-center me-3 rounded-circle" width="60">
-                            <span class="badge bg-success badge-dot"></span>
-                            </div>
-                            <div class="pt-1">
-                            <p class="fw-bold mb-0">${data.username}</p>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-            `;
+        let toggleMic = async () => {
+            let audioTrack = localStream.getTracks().find(track => track.kind === 'audio')
+            if (audioTrack) {
+                if (audioTrack.enabled) {
+                    audioTrack.enabled = false
+                    document.getElementById('mic-btn').style.backgroundColor = 'rgb(255, 80, 80)'
+                } else {
+                    audioTrack.enabled = true
+                    document.getElementById('mic-btn').style.backgroundColor = 'rgb(179, 102, 249, .9)'
+                }
+            }
+            
         }
 
-        let handleUserDisconnected = (data) => {
-            document.getElementById(data.socketId).remove();
-        };
 
-        socket.on('room:' + ROOM_ID + ':websockets-avatar-created', setAvatar)
-        socket.on('room:' + ROOM_ID + ':websockets-user-connected', handleNewUserConnected)
-        socket.on('room:' + ROOM_ID + ':websockets-users-list', handleUsersList)
-        socket.on('room:' + ROOM_ID + ':websockets-user-disconnected', handleUserDisconnected)
+        document.getElementById('camera-btn').addEventListener('click', toggleCamera)
+        document.getElementById('mic-btn').addEventListener('click', toggleMic)
     });
-
-    function startChatWith(event, socketId) {
-        event.preventDefault();
-    }
-
 }
 
 
-
-function startChatWith(e, socketId) {
-    socket.emit('get-chat-messages', {root: socket.id, peer:socketId});
-}
