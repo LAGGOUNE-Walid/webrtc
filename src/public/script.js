@@ -1,13 +1,25 @@
 window.onload = function () {
-    establishConnection("");
+    let init = async () => {
+        await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: { min: 640, ideal: 1920, max: 1920 },
+                height: { min: 480, ideal: 1080, max: 1080 }
+            }, audio: true
+        }).then((mediaStream) => {
+            document.getElementById('user-1').srcObject = mediaStream;
+            establishConnection(mediaStream)
+        });
+        
+    }
+
+    init();
+    // establishConnection();
 }
 
-function establishConnection(username) {
+function establishConnection(localStream) {
 
     socket = io('/');
     let peer;
-
-    let localStream;
     let remoteStream;
 
     socket.on('connect', function () {
@@ -31,15 +43,15 @@ function establishConnection(username) {
             remoteStream = new MediaStream;
             document.getElementById('user-2').srcObject = remoteStream
             document.getElementById('user-2').style.display = 'block';
-            if (!localStream) {
-                localStream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { min: 640, ideal: 1920, max: 1920 },
-                        height: { min: 480, ideal: 1080, max: 1080 }
-                    }, audio: true
-                });
-            }
-            document.getElementById('user-1').srcObject = localStream;
+            // if (!localStream) {
+            //     localStream = await navigator.mediaDevices.getUserMedia({
+            //         video: {
+            //             width: { min: 640, ideal: 1920, max: 1920 },
+            //             height: { min: 480, ideal: 1080, max: 1080 }
+            //         }, audio: true
+            //     });
+            // }
+            // document.getElementById('user-1').srcObject = localStream;
             document.getElementById('user-1').classList.add('smallFrame');
             localStream.getTracks().forEach((track) => {
                 peerConnection.addTrack(track, localStream)
@@ -111,18 +123,6 @@ function establishConnection(username) {
             console.log('setting candindates')
             await peer.addIceCandidate(data.candidate);
         };
-
-        let init = async () => {
-            localStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { min: 640, ideal: 1920, max: 1920 },
-                    height: { min: 480, ideal: 1080, max: 1080 }
-                }, audio: true
-            });
-            document.getElementById('user-1').srcObject = localStream;
-        }
-
-        init();
 
         socket.on('room:' + ROOM_ID + ':websockets-incomming-call', handleIncommingCallFromPeer);
         socket.on('room:' + ROOM_ID + ':websockets-user-accepted-call', accepteRemoteUserCall);
