@@ -6,15 +6,17 @@ const { v4: uuidV4 } = require('uuid')
 const redis = require('redis')
 const path = require('path');
 const AvatarGenerator = require('avatar-generator')
+var cache = require('memory-cache');
+// const redisClient = redis.createClient({
+//     url: 'redis://default:XyYryA9s4568ezaM3DlqXwcscBCQz@Axg@redis'
+// });
 
-const redisClient = redis.createClient({
-    url: 'redis://default:XyYryA9s4568ezaM3DlqXwcscBCQz@Axg@redis'
-});
+// redisClient.on('error', (err) => {
+//     console.log(`Error ${err}`)
+// })
+// redisClient.connect();
 
-redisClient.on('error', (err) => {
-    console.log(`Error ${err}`)
-})
-redisClient.connect();
+
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -29,6 +31,6 @@ app.get('/:room', (req, res) => {
 })
 
 const IoController = require("./IoControllers.js")
-io.on('connection', (socket) => IoController(socket, redisClient, io));
+io.on('connection', (socket) => IoController(socket, cache, io));
 
 server.listen(3000)
