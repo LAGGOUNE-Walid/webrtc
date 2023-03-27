@@ -113,7 +113,12 @@ function establishConnection(username) {
         };
 
         let init = async () => {
-            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+            localStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { min: 640, ideal: 1920, max: 1920 },
+                    height: { min: 480, ideal: 1080, max: 1080 }
+                }, audio: true
+            });
             document.getElementById('user-1').srcObject = localStream;
         }
 
