@@ -1,12 +1,16 @@
-Tech Stack Overview
-Technology	Purpose	Key Benefit
-JavaScript	Primary language for WebRTC logic and application.	High flexibility, broad ecosystem, browser-native.
-WebRTC API	Core technology for real-time communication.	Direct browser-to-browser media streaming.
-Docker	Containerization platform.	Isolated, consistent, and portable environments.
-Docker Compose	Orchestration for multi-container applications.	Simplified multi-service setup and management.
-Git	Version control system.	Collaborative development and change tracking.
-Project Structure
+### Tech Stack Overview
 
+| Technology      | Purpose                                            | Key Benefit                                       |
+| :-------------- | :------------------------------------------------- | :------------------------------------------------ |
+| **JavaScript**  | Primary language for WebRTC logic and application. | High flexibility, broad ecosystem, browser-native. |
+| **WebRTC API**  | Core technology for real-time communication.       | Direct browser-to-browser media streaming.        |
+| **Docker**      | Containerization platform.                         | Isolated, consistent, and portable environments.  |
+| **Docker Compose** | Orchestration for multi-container applications.    | Simplified multi-service setup and management.    |
+| **Git**         | Version control system.                            | Collaborative development and change tracking.    |
+
+### Project Structure
+
+```
 .
 ├── .gitignore
 ├── docker-compose.yml
@@ -15,43 +19,52 @@ Project Structure
     └── public/        # Example static assets for client-side WebRTC
         └── index.html
         └── client.js
+```
 
-🚀 Operational Setup
-Prerequisites
+---
+
+## 🚀 Operational Setup
+
+### Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
 
-    Docker: Get Docker
-    Docker Compose: Typically bundled with Docker Desktop. Verify installation with docker compose version.
-    Node.js (Optional, for local development/testing outside Docker): Download Node.js
+*   **Docker**: [Get Docker](https://docs.docker.com/get-docker/)
+*   **Docker Compose**: Typically bundled with Docker Desktop. Verify installation with `docker compose version`.
+*   **Node.js** (Optional, for local development/testing outside Docker): [Download Node.js](https://nodejs.org/en/download/)
 
-Installation
+### Installation
 
 Follow these steps to get your WebRTC environment running:
 
-    Clone the Repository:
-
+1.  **Clone the Repository**:
+    ```bash
     git clone https://github.com/user/repo.git # Replace user/repo with actual repository path
     cd webrtc
+    ```
 
-    Build and Run Containers: This command will build the necessary Docker images and start the services defined in docker-compose.yml in detached mode.
-
+2.  **Build and Run Containers**:
+    This command will build the necessary Docker images and start the services defined in `docker-compose.yml` in detached mode.
+    ```bash
     docker-compose up -d --build
+    ```
 
-    Verify Services: Check if the containers are running correctly:
-
+3.  **Verify Services**:
+    Check if the containers are running correctly:
+    ```bash
     docker-compose ps
+    ```
+    You should see your services listed with a `Up` status.
 
-    You should see your services listed with a Up status.
+4.  **Access the Application**:
+    Open your web browser and navigate to `http://localhost:8080` (or the port configured in your `docker-compose.yml`).
 
-    Access the Application: Open your web browser and navigate to http://localhost:8080 (or the port configured in your docker-compose.yml).
+### Environment Configuration
 
-Environment Configuration
+The project's environment and service configurations are managed primarily through the `docker-compose.yml` file.
 
-The project's environment and service configurations are managed primarily through the docker-compose.yml file.
-
-    docker-compose.yml: This file defines the services, networks, and volumes for your application. You can modify service ports, environment variables, and mount paths here.
-
+*   **`docker-compose.yml`**: This file defines the services, networks, and volumes for your application. You can modify service ports, environment variables, and mount paths here.
+    ```yaml
     # Example snippet from docker-compose.yml
     services:
       webrtc-app:
@@ -61,5 +74,7 @@ The project's environment and service configurations are managed primarily throu
         environment:
           SIGNALING_SERVER_PORT: 8080
           # Add other environment variables as needed
-
+    ```
     Review and adjust this file to match your specific deployment needs or local development setup.
+
+---
